@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diagnóstico API</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        .loading { color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>Diagnóstico del Sistema Restaurante</h1>
+    
+    <div class="test" id="test1">
+        <h3>1. Test de Conexión a API</h3>
+        <button onclick="testConexion()">Probar</button>
+        <div id="result1"></div>
+    </div>
+    
+    <div class="test" id="test2">
+        <h3>2. Test de Tablas</h3>
+        <button onclick="testTablas()">Probar</button>
+        <div id="result2"></div>
+    </div>
+    
+    <div class="test" id="test3">
+        <h3>3. Test Crear Pedido</h3>
+        <button onclick="testCrearPedido()">Probar con datos simples</button>
+        <button onclick="testCrearPedidoCompleto()">Probar con datos completos</button>
+        <div id="result3"></div>
+    </div>
+    
+    <div class="test" id="test4">
+        <h3>4. Ver Pedidos Existentes</h3>
+        <button onclick="verPedidos()">Ver</button>
+        <div id="result4"></div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api';
+        
+        async function testConexion() {
+            showLoading('result1');
+            try {
+                const response = await fetch(`${API_BASE}/pedido/diagnostico`);
+                const data = await response.json();
+                showResult('result1', data, response.ok);
+            } catch (error) {
+                showError('result1', error);
+            }
+        }
+        
+        async function testTablas() {
+            showLoading('result2');
+            try {
+                // Test mesas
+                const resMesas = await fetch(`${API_BASE}/mesa`);
+                const mesas = await resMesas.json();
+                
+                // Test meseros
+                const resMeseros = await fetch(`${API_BASE}/mesero`);
+                const meseros = await resMeseros.json();
+                
+                const data = {
+                    Mesas: mesas.length,
+                    Meseros: meseros.length,
+                    PrimeraMesa: mesas[0],
+                    PrimerMesero: meseros[0]
+                };
+                
+                showResult('result2', data, true);
+            } catch (error) {
+                showError('result2', error);
+            }
+        }
+        
+        async function testCrearPedido() {
+            showLoading('result3');
+            try {
+                // Datos mínimos
+                const pedido = {
+                    ID_MESA: 1,
+                    ID_MESERO: 1
+                    // Sin fecha ni hora - el servidor debe usar valores por defecto
+                };
+                
+                const response = await fetch(`${API_BASE}/pedido`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedido)
+                });
+                
+                const data = await response.json();
+                showResult('result3', { 
+                    Status: response.status,
+                    DatosEnviados: pedido,
+                    Respuesta: data 
+                }, response.ok);
+            } catch (error) {
+                showError('result3', error);
+            }
+        }
+        
+        async function testCrearPedidoCompleto() {
+            showLoading('result3');
+            try {
+                const ahora = new Date();
+                const pedido = {
+                    ID_MESA: 1,
+                    ID_MESERO: 1,
+                    FECHA_PEDIDO: ahora.toISOString().split('T')[0], // Solo fecha
+                    HORA_PEDIDO: ahora.toTimeString().split(' ')[0] // Solo hora
+                };
+                
+                const response = await fetch(`${API_BASE}/pedido`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedido)
+                });
+                
+                const data = await response.json();
+                showResult('result3', { 
+                    Status: response.status,
+                    DatosEnviados: pedido,
+                    Respuesta: data 
+                }, response.ok);
+            } catch (error) {
+                showError('result3', error);
+            }
+        }
+        
+        async function verPedidos() {
+            showLoading('result4');
+            try {
+                const response = await fetch(`${API_BASE}/pedido`);
+                const data = await response.json();
+                showResult('result4', data, true);
+            } catch (error) {
+                showError('result4', error);
+            }
+        }
+        
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = 
+                '<div class="loading">Probando...</div>';
+        }
+        
+        function showResult(elementId, data, success) {
+            const element = document.getElementById(elementId);
+            const className = success ? 'success' : 'error';
+            element.innerHTML = `
+                <div class="${className}">
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            // Actualizar la clase del contenedor
+            document.getElementById(`test${elementId.slice(-1)}`).className = 
+                `test ${success ? 'success' : 'error'}`;
+        }
+        
+        function showError(elementId, error) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="error">
+                    <strong>Error:</strong> ${error.message}
+                    ${error.stack ? `<pre>${error.stack}</pre>` : ''}
+                </div>
+            `;
+            document.getElementById(`test${elementId.slice(-1)}`).className = 'test error';
+        }
+    </script>
+</body>
+</html>

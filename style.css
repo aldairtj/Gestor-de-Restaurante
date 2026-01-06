@@ -1,0 +1,466 @@
+/* Estilos mínimos para el sistema - SOLO LO ESENCIAL */
+:root {
+    --primary: rgb(255, 182, 147);
+    --primary-dark: rgb(141, 77, 45);
+    --background: rgb(26, 18, 14);
+    --surface: rgb(39, 30, 26);
+    --text-primary: rgb(240, 223, 216);
+    --success: rgb(76, 175, 80);
+    --warning: rgb(255, 152, 0);
+    --error: rgb(244, 67, 54);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+}
+
+.loading i {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+/* Estilos para el dashboard mejorado */
+.dashboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+.dashboard-tabs {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--surface-high);
+    overflow: hidden;
+}
+
+.tab-buttons {
+    display: flex;
+    background: var(--surface-high);
+    border-bottom: 1px solid var(--surface);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    background: var(--surface);
+    color: var(--primary);
+}
+
+.tab-btn.active {
+    background: var(--surface);
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.layout-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.legend {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-color.available {
+    background: var(--success);
+}
+
+.legend-color.occupied {
+    background: var(--error);
+}
+
+.legend-color.reserved {
+    background: var(--warning);
+}
+
+.restaurant-layout-editable {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--surface-high);
+    padding: 20px;
+    height: 600px;
+    position: relative;
+    overflow: hidden;
+}
+
+.layout-canvas {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.layout-background {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--background) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--background) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--background) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--background) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.restaurant-grid {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.mesa-draggable {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    cursor: move;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.mesa-draggable:hover {
+    transform: scale(1.05);
+    z-index: 20;
+}
+
+.mesa-draggable.selected {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    z-index: 30;
+}
+
+.mesa-draggable.dragging {
+    z-index: 100;
+    opacity: 0.9;
+    transform: scale(1.1);
+}
+
+.mesa-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mesa-draggable.available .mesa-content {
+    background: var(--success);
+}
+
+.mesa-draggable.occupied .mesa-content {
+    background: var(--error);
+}
+
+.mesa-draggable.reserved .mesa-content {
+    background: var(--warning);
+}
+
+.mesa-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.mesa-capacity {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    opacity: 0.9;
+}
+
+.mesa-status-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    opacity: 0.8;
+}
+
+.mesa-drag-handle {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    text-align: center;
+    padding: 2px;
+    font-size: 0.7rem;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    cursor: move;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.mesa-draggable:hover .mesa-drag-handle {
+    opacity: 1;
+}
+
+.mesa-detalles-container {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--surface-high);
+    padding: 20px;
+    min-height: 200px;
+}
+
+.placeholder-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 40px;
+}
+
+.placeholder-message i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+    opacity: 0.5;
+}
+
+.mesa-detalles-card {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mesa-detalles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--surface-high);
+}
+
+.mesa-detalles-header h3 {
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mesa-detalles-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--surface-high);
+}
+
+.detail-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.mesa-reservas,
+.mesa-pedidos {
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--surface-high);
+    border-radius: 8px;
+}
+
+.mesa-reservas h4,
+.mesa-pedidos h4 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.reserva-item,
+.plato-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reserva-item:last-child,
+.plato-item:last-child {
+    border-bottom: none;
+}
+
+.reserva-time,
+.reserva-cliente {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.pedido-info {
+    margin-top: 10px;
+}
+
+.pedido-id {
+    color: var(--primary);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.pedido-detalles {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.mesa-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-block {
+    width: 100%;
+    text-align: center;
+}
+
+.status-warning {
+    background: rgba(255, 152, 0, 0.2);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+    opacity: 0.5;
+}
+
+.empty-state.error i {
+    color: var(--error);
+}
+
+.empty-state p {
+    margin: 0;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 1200px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .restaurant-layout-editable {
+        height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .layout-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .mesa-draggable {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .mesa-number {
+        font-size: 1.3rem;
+    }
+}

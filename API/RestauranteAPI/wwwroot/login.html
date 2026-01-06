@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante - Inicio de Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: rgb(255, 182, 147);
+            --primary-dark: rgb(141, 77, 45);
+            --secondary: rgb(230, 190, 172);
+            --tertiary: rgb(209, 200, 143);
+            --background: rgb(26, 18, 14);
+            --surface: rgb(39, 30, 26);
+            --surface-high: rgb(50, 40, 36);
+            --text-primary: rgb(240, 223, 216);
+            --text-secondary: rgb(215, 194, 185);
+            --success: rgb(76, 175, 80);
+            --warning: rgb(255, 152, 0);
+            --error: rgb(244, 67, 54);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .welcome-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeOut 1s ease 3s forwards;
+        }
+
+        .welcome-logo {
+            font-size: 4rem;
+            color: var(--primary);
+            animation: bounce 2s infinite;
+        }
+
+        .welcome-text {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-top: 20px;
+            color: var(--primary);
+            text-align: center;
+            animation: slideUp 1s ease;
+        }
+
+        .welcome-subtext {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            animation: slideUp 1s ease 0.5s both;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: var(--surface);
+            margin-top: 30px;
+            border-radius: 2px;
+            overflow: hidden;
+            animation: slideUp 1s ease 1s both;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            animation: loading 3s ease;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        .login-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-logo {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .login-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .login-option {
+            background: var(--surface);
+            border: 2px solid var(--surface-high);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .login-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(255, 182, 147, 0.1);
+        }
+
+        .option-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .option-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .option-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .login-form-container {
+            width: 100%;
+            display: none;
+        }
+
+        .login-form {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid var(--surface-high);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            background: var(--surface-high);
+            border: 1px solid var(--surface);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--background);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-high);
+            color: var(--text-primary);
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface);
+        }
+
+        .btn-back {
+            margin-bottom: 15px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--surface-high);
+        }
+
+        .btn-back:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--error);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            display: none;
+        }
+
+        .error-message i {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .login-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-logo {
+                font-size: 3rem;
+            }
+            
+            .welcome-text {
+                font-size: 2rem;
+            }
+            
+            .login-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animación de bienvenida -->
+    <div class="welcome-animation" id="welcomeAnimation">
+        <div class="welcome-logo">🍽️</div>
+        <div class="welcome-text">Bienvenido al Sistema Restaurante</div>
+        <div class="welcome-subtext">Gestión inteligente para tu negocio</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Contenedor principal de login -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-header">
+            <div class="login-logo">🍽️</div>
+            <h1 class="login-title">Sistema Restaurante</h1>
+            <p class="login-subtitle">Selecciona tu rol para continuar</p>
+        </div>
+
+        <!-- Opciones de login -->
+        <div class="login-options" id="loginOptions">
+            <div class="login-option" onclick="selectOption('admin')">
+                <div class="option-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3 class="option-title">Administrador</h3>
+                <p class="option-description">Acceso completo al sistema con todas las funcionalidades</p>
+            </div>
+
+            <div class="login-option" onclick="selectOption('mesero')">
+                <div class="option-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3 class="option-title">Mesero</h3>
+                <p class="option-description">Acceso a funcionalidades específicas para atención al cliente</p>
+            </div>
+        </div>
+
+        <!-- Formulario de login para mesero -->
+        <div class="login-form-container" id="loginFormContainer">
+            <button class="btn btn-back" onclick="goBackToOptions()">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            
+            <div class="login-form">
+                <h2 style="margin-bottom: 20px; color: var(--primary); text-align: center;">
+                    <i class="fas fa-user-tie"></i> Inicio de Sesión - Mesero
+                </h2>
+                
+                <form id="meseroLoginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="usuario">
+                            <i class="fas fa-user"></i> Usuario
+                        </label>
+                        <input type="text" id="usuario" class="form-control" required 
+                               placeholder="Ingresa tu usuario">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="contrasena">
+                            <i class="fas fa-lock"></i> Contraseña
+                        </label>
+                        <input type="password" id="contrasena" class="form-control" required 
+                               placeholder="Ingresa tu contraseña">
+                    </div>
+                    
+                    <div class="error-message" id="errorMessage">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="errorText">Error en las credenciales</span>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary" onclick="loginMesero()" style="margin-top: 10px;">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
+                
+                <div style="text-align: center; margin-top: 20px; color: var(--text-secondary); font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i>
+                    El registro de meseros solo está disponible para administradores
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base URL de la API
+        const API_BASE = '/api';
+        let selectedOption = null;
+
+        // Mostrar animación de bienvenida
+        setTimeout(() => {
+            document.getElementById('welcomeAnimation').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+        }, 3000);
+
+        // Función para seleccionar opción
+        function selectOption(option) {
+            selectedOption = option;
+            
+            if (option === 'admin') {
+                // Redirigir directamente al sistema completo
+                localStorage.setItem('userRole', 'admin');
+                window.location.href = 'index-admin.html';
+            } else if (option === 'mesero') {
+                // Mostrar formulario de login
+                document.getElementById('loginOptions').style.display = 'none';
+                document.getElementById('loginFormContainer').style.display = 'block';
+                // Solo scroll si es necesario
+                window.scrollTo({
+                    top: document.getElementById('loginContainer').offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Función para volver a las opciones
+        function goBackToOptions() {
+            document.getElementById('loginFormContainer').style.display = 'none';
+            document.getElementById('loginOptions').style.display = 'grid';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('usuario').value = '';
+            document.getElementById('contrasena').value = '';
+        }
+
+        // Función para login de mesero - VERSIÓN CORREGIDA
+        async function loginMesero() {
+            const usuario = document.getElementById('usuario').value.trim();
+            const contrasena = document.getElementById('contrasena').value.trim();
+            
+            if (!usuario || !contrasena) {
+                showError('Por favor, completa todos los campos');
+                return;
+            }
+            
+            const loginBtn = document.querySelector('#loginFormContainer .btn-primary');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando sesión...';
+            loginBtn.disabled = true;
+            
+            // Ocultar error anterior
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            try {
+                console.log('Intentando login con:', { usuario, contrasena });
+                
+                const response = await fetch(`${API_BASE}/mesero/login-simple`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        usuario: usuario, 
+                        contrasena: contrasena 
+                    })
+                });
+                
+                console.log('Respuesta del servidor:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Login exitoso:', data);
+                    
+                    // Guardar datos en localStorage
+                    localStorage.setItem('userRole', 'mesero');
+                    localStorage.setItem('mesero_token', data.Token || '');
+                    localStorage.setItem('mesero_data', JSON.stringify(data));
+                    
+                    // Redirigir a la versión para meseros
+                    window.location.href = 'index-mesero.html';
+                    
+                } else {
+                    let errorMessage = 'Credenciales incorrectas';
+                    
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.message || errorMessage;
+                    } catch {
+                        // Si no se puede parsear como JSON, usar texto plano
+                        errorMessage = await response.text() || errorMessage;
+                    }
+                    
+                    showError(errorMessage);
+                }
+                
+            } catch (error) {
+                console.error('Error en login:', error);
+                showError('Error de conexión con el servidor');
+            } finally {
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }
+        }
+
+        // Función para mostrar errores
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            errorText.textContent = message;
+            errorElement.style.display = 'flex';
+            
+            // Hacer scroll al error
+            setTimeout(() => {
+                errorElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
+        }
+
+        // Permitir login con Enter
+        document.getElementById('contrasena').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginMesero();
+            }
+        });
+
+        // Verificar si ya hay una sesión activa
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Verificando sesión...');
+            
+            const meseroToken = localStorage.getItem('mesero_token');
+            const userRole = localStorage.getItem('userRole');
+            
+            console.log('Token encontrado:', meseroToken ? 'Sí' : 'No');
+            console.log('Rol encontrado:', userRole || 'Ninguno');
+            
+            // SOLO para debugging: mostrar qué hay en localStorage
+            if (isLocalhost) {
+                console.log('📦 Contenido de localStorage:');
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    console.log(`  ${key}: ${value.substring(0, 50)}${value.length > 50 ? '...' : ''}`);
+                }
+            }
+            
+            // NOTA: Comentamos las redirecciones automáticas
+            // para forzar siempre mostrar la página de login
+            
+            /*
+            // Si ya está logueado como mesero, redirigir a su versión
+            if (meseroToken && userRole === 'mesero') {
+                console.log('➡️ Redirigiendo a index-mesero.html');
+                window.location.href = 'index-mesero.html';
+                return;
+            }
+            // Si ya está como admin, redirigir al sistema completo
+            else if (userRole === 'admin') {
+                console.log('➡️ Redirigiendo a index-admin.html');
+                window.location.href = 'index-admin.html';
+                return;
+            }
+            */
+            
+            console.log('👋 Mostrando página de login');
+            
+            // Mostrar animación y luego login
+            setTimeout(() => {
+                document.getElementById('welcomeAnimation').style.display = 'none';
+                document.getElementById('loginContainer').style.display = 'flex';
+                console.log('✅ Login visible');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
